@@ -79,5 +79,6 @@ export const config = {
     '/api/roles/:path*',
     '/api/config/:path*',
     '/api/api-keys/:path*',
+    '/api/invitation-codes/:path*',
   ]
 } 
