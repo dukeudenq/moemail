@@ -29,7 +29,7 @@ async function migrate() {
     // Read wrangler.json
     const wranglerPath = join(process.cwd(), 'wrangler.json')
     let wranglerContent: string
-    
+
     try {
       wranglerContent = readFileSync(wranglerPath, 'utf-8')
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -40,7 +40,7 @@ async function migrate() {
 
     // Parse wrangler.json
     const config = JSON.parse(wranglerContent) as WranglerConfig
-    
+
     if (!config.d1_databases?.[0]?.database_name) {
       console.error('Error: Database name not found in wrangler.json')
       process.exit(1)
@@ -48,10 +48,9 @@ async function migrate() {
 
     const dbName = config.d1_databases[0].database_name
 
-    // Skip migration generation during deployment
-    // Migrations should be generated locally and committed to the repository
-    // This ensures consistent, reviewed migrations and prevents auto-generation conflicts
-    console.log('Using pre-committed migrations from repository')
+    // Generate migrations
+    console.log('Generating migrations...')
+    await execAsync('drizzle-kit generate')
 
     // Applying migrations
     console.log(`Applying migrations to ${mode} database: ${dbName}`)
