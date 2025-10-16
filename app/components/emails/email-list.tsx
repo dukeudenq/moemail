@@ -20,9 +20,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { ROLES } from "@/lib/permissions"
+import { ROLES, PERMISSIONS } from "@/lib/permissions"
 import { useUserRole } from "@/hooks/use-user-role"
 import { useConfig } from "@/hooks/use-config"
+import { useRolePermission } from "@/hooks/use-role-permission"
 
 interface Email {
   id: string
@@ -46,6 +47,8 @@ export function EmailList({ onEmailSelect, selectedEmailId }: EmailListProps) {
   const { data: session } = useSession()
   const { config } = useConfig()
   const { role } = useUserRole()
+  const { checkPermission } = useRolePermission()
+  const canCreateDelete = checkPermission(PERMISSIONS.CREATE_DELETE_EMAIL)
   const t = useTranslations("emails.list")
   const tCommon = useTranslations("common.actions")
   const [emails, setEmails] = useState<Email[]>([])
@@ -181,7 +184,7 @@ export function EmailList({ onEmailSelect, selectedEmailId }: EmailListProps) {
               )}
             </span>
           </div>
-          <CreateDialog onEmailCreated={handleRefresh} />
+          {canCreateDelete && <CreateDialog onEmailCreated={handleRefresh} />}
         </div>
         
         <div className="flex-1 overflow-auto p-2" onScroll={handleScroll}>
@@ -209,17 +212,19 @@ export function EmailList({ onEmailSelect, selectedEmailId }: EmailListProps) {
                       )}
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="opacity-0 group-hover:opacity-100 h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setEmailToDelete(email)
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                  {canCreateDelete && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="opacity-0 group-hover:opacity-100 h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setEmailToDelete(email)
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  )}
                 </div>
               ))}
               {loadingMore && (

@@ -5,6 +5,7 @@ export const EMAIL_CONFIG = {
     emperor: 0,   // 皇帝无限制
     duke: 5,      // 公爵每日5封
     knight: 2,    // 骑士每日2封
+    squire: 1,    // 侍从每日1封
     civilian: -1, // 平民禁止发件
   },
 } as const

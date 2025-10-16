@@ -19,19 +19,21 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Github, Loader2, KeyRound, User2 } from "lucide-react"
+import { Github, Loader2, KeyRound, User2, Ticket } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface FormErrors {
   username?: string
   password?: string
   confirmPassword?: string
+  invitationCode?: string
 }
 
 export function LoginForm() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [invitationCode, setInvitationCode] = useState("")
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
   const { toast } = useToast()
@@ -55,6 +57,7 @@ export function LoginForm() {
     if (password && password.length < 8) newErrors.password = t("errors.passwordTooShort")
     if (!confirmPassword) newErrors.confirmPassword = t("errors.confirmPasswordRequired")
     if (password !== confirmPassword) newErrors.confirmPassword = t("errors.passwordMismatch")
+    if (!invitationCode) newErrors.invitationCode = t("errors.invitationCodeRequired")
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -99,7 +102,7 @@ export function LoginForm() {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, invitationCode }),
       })
 
       const data = await response.json() as { error?: string }
@@ -150,6 +153,7 @@ export function LoginForm() {
     setUsername("")
     setPassword("")
     setConfirmPassword("")
+    setInvitationCode("")
     setErrors({})
   }
 
@@ -323,6 +327,29 @@ export function LoginForm() {
                   </div>
                   {errors.confirmPassword && (
                     <p className="text-xs text-destructive">{errors.confirmPassword}</p>
+                  )}
+                </div>
+                <div className="space-y-1.5">
+                  <div className="relative">
+                    <div className="absolute left-2.5 top-2 text-muted-foreground">
+                      <Ticket className="h-5 w-5" />
+                    </div>
+                    <Input
+                      className={cn(
+                        "h-9 pl-9 pr-3",
+                        errors.invitationCode && "border-destructive focus-visible:ring-destructive"
+                      )}
+                      placeholder={t("fields.invitationCode")}
+                      value={invitationCode}
+                      onChange={(e) => {
+                        setInvitationCode(e.target.value.toUpperCase())
+                        setErrors({})
+                      }}
+                      disabled={loading}
+                    />
+                  </div>
+                  {errors.invitationCode && (
+                    <p className="text-xs text-destructive">{errors.invitationCode}</p>
                   )}
                 </div>
               </div>

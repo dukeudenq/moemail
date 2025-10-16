@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server"
 import { register } from "@/lib/auth"
-import { authSchema, AuthSchema } from "@/lib/validation"
+import { registerSchema, RegisterSchema } from "@/lib/validation"
 
 export const runtime = "edge"
 
 export async function POST(request: Request) {
   try {
-    const json = await request.json() as AuthSchema
-    
+    const json = await request.json() as RegisterSchema
+
     try {
-      authSchema.parse(json)
+      registerSchema.parse(json)
     } catch (error) {
       return NextResponse.json(
         { error: error instanceof Error ? error.message : "输入格式不正确" },
@@ -17,8 +17,8 @@ export async function POST(request: Request) {
       )
     }
 
-    const { username, password } = json
-    const user = await register(username, password)
+    const { username, password, invitationCode } = json
+    const user = await register(username, password, invitationCode)
 
     return NextResponse.json({ user })
   } catch (error) {

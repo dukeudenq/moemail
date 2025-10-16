@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     maxEmails: string
   }
   
-  if (![ROLES.DUKE, ROLES.KNIGHT, ROLES.CIVILIAN].includes(defaultRole)) {
+  if (![ROLES.DUKE, ROLES.KNIGHT, ROLES.SQUIRE, ROLES.CIVILIAN].includes(defaultRole)) {
     return Response.json({ error: "无效的角色" }, { status: 400 })
   }
 

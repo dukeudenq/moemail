@@ -114,11 +114,36 @@ export const apiKeys = sqliteTable('api_keys', {
   nameUserIdUnique: uniqueIndex('name_user_id_unique').on(table.name, table.userId)
 }));
 
+export const invitationCodes = sqliteTable('invitation_code', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  code: text('code').notNull().unique(),
+  createdBy: text('created_by').notNull().references(() => users.id, { onDelete: "cascade" }),
+  role: text('role').notNull(),
+  mailboxExpiryMs: integer('mailbox_expiry_ms'),
+  usedBy: text('used_by').references(() => users.id, { onDelete: "set null" }),
+  usedAt: integer('used_at', { mode: 'timestamp_ms' }),
+  expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }).$defaultFn(() => new Date()),
+}, (table) => ({
+  codeIdx: uniqueIndex('invitation_code_code_idx').on(table.code),
+}));
+
 
 
 export const apiKeysRelations = relations(apiKeys, ({ one }) => ({
   user: one(users, {
     fields: [apiKeys.userId],
+    references: [users.id],
+  }),
+}));
+
+export const invitationCodesRelations = relations(invitationCodes, ({ one }) => ({
+  creator: one(users, {
+    fields: [invitationCodes.createdBy],
+    references: [users.id],
+  }),
+  usedByUser: one(users, {
+    fields: [invitationCodes.usedBy],
     references: [users.id],
   }),
 }));
@@ -137,6 +162,7 @@ export const userRolesRelations = relations(userRoles, ({ one }) => ({
 export const usersRelations = relations(users, ({ many }) => ({
   userRoles: many(userRoles),
   apiKeys: many(apiKeys),
+  createdInvitations: many(invitationCodes),
 }));
 
 export const rolesRelations = relations(roles, ({ many }) => ({

@@ -16,6 +16,7 @@ const ROLE_DESCRIPTIONS: Record<Role, string> = {
   [ROLES.EMPEROR]: "皇帝（网站所有者）",
   [ROLES.DUKE]: "公爵（超级用户）",
   [ROLES.KNIGHT]: "骑士（高级用户）",
+  [ROLES.SQUIRE]: "侍从（仅收发邮件）",
   [ROLES.CIVILIAN]: "平民（普通用户）",
 }
 
@@ -25,11 +26,12 @@ const getDefaultRole = async (): Promise<Role> => {
   if (
     defaultRole === ROLES.DUKE ||
     defaultRole === ROLES.KNIGHT ||
+    defaultRole === ROLES.SQUIRE ||
     defaultRole === ROLES.CIVILIAN
   ) {
     return defaultRole as Role
   }
-  
+
   return ROLES.CIVILIAN
 }
 
@@ -146,22 +148,9 @@ export const {
   ],
   events: {
     async signIn({ user }) {
-      if (!user.id) return
-
-      try {
-        const db = createDb()
-        const existingRole = await db.query.userRoles.findFirst({
-          where: eq(userRoles.userId, user.id),
-        })
-
-        if (existingRole) return
-
-        const defaultRole = await getDefaultRole()
-        const role = await findOrCreateRole(db, defaultRole)
-        await assignRoleToUser(db, user.id, role.id)
-      } catch (error) {
-        console.error('Error assigning role:', error)
-      }
+      // OAuth users without a role will be prompted for invitation code in the session callback
+      // No automatic role assignment here anymore
+      return true
     },
   },
   callbacks: {
@@ -182,26 +171,21 @@ export const {
         session.user.image = token.image as string
 
         const db = createDb()
-        let userRoleRecords = await db.query.userRoles.findMany({
+        const userRoleRecords = await db.query.userRoles.findMany({
           where: eq(userRoles.userId, session.user.id),
           with: { role: true },
         })
-  
+
         if (!userRoleRecords.length) {
-          const defaultRole = await getDefaultRole()
-          const role = await findOrCreateRole(db, defaultRole)
-          await assignRoleToUser(db, session.user.id, role.id)
-          userRoleRecords = [{
-            userId: session.user.id,
-            roleId: role.id,
-            createdAt: new Date(),
-            role: role
-          }]
+          // Mark user as needing invitation code
+          session.user.needsInvitationCode = true
+          session.user.roles = []
+        } else {
+          session.user.needsInvitationCode = false
+          session.user.roles = userRoleRecords.map(ur => ({
+            name: ur.role.name,
+          }))
         }
-  
-        session.user.roles = userRoleRecords.map(ur => ({
-          name: ur.role.name,
-        }))
       }
 
       return session
@@ -212,9 +196,14 @@ export const {
   },
 }))
 
-export async function register(username: string, password: string) {
+export async function register(
+  username: string,
+  password: string,
+  invitationCode: string
+) {
   const db = createDb()
-  
+
+  // Check if user already exists
   const existing = await db.query.users.findFirst({
     where: eq(users.username, username)
   })
@@ -223,14 +212,86 @@ export async function register(username: string, password: string) {
     throw new Error("用户名已存在")
   }
 
+  // Validate invitation code
+  const { invitationCodes, emails: emailsSchema } = await import("./schema")
+  const invitation = await db.query.invitationCodes.findFirst({
+    where: eq(invitationCodes.code, invitationCode.toUpperCase())
+  })
+
+  if (!invitation) {
+    throw new Error("邀请码不存在")
+  }
+
+  if (invitation.usedBy) {
+    throw new Error("邀请码已被使用")
+  }
+
+  const now = new Date()
+  if (invitation.expiresAt < now) {
+    throw new Error("邀请码已过期")
+  }
+
+  // Check if username conflicts with existing mailbox addresses
+  const env = getRequestContext().env
+  const domainString = await env.SITE_CONFIG.get("EMAIL_DOMAINS")
+  const domains = domainString ? domainString.split(',') : ["moemail.app"]
+
+  for (const domain of domains) {
+    const conflictingMailbox = await db.query.emails.findFirst({
+      where: eq(emailsSchema.address, `${username}@${domain}`)
+    })
+
+    if (conflictingMailbox) {
+      throw new Error("用户名与现有邮箱冲突，请选择其他用户名")
+    }
+  }
+
   const hashedPassword = await hashPassword(password)
-  
+
   const [user] = await db.insert(users)
     .values({
       username,
       password: hashedPassword,
     })
     .returning()
+
+  // Assign role from invitation code
+  const role = await findOrCreateRole(db, invitation.role as Role)
+  await assignRoleToUser(db, user.id, role.id)
+
+  // Mark invitation code as used
+  await db.update(invitationCodes)
+    .set({
+      usedBy: user.id,
+      usedAt: now
+    })
+    .where(eq(invitationCodes.id, invitation.id))
+
+  // Auto-create mailbox for squire role users
+  if (invitation.role === ROLES.SQUIRE) {
+    try {
+      const domain = domains[0]
+      const address = `${username}@${domain}`
+
+      let expiresAt: Date
+      if (invitation.mailboxExpiryMs === 0 || invitation.mailboxExpiryMs === null) {
+        // Permanent mailbox
+        expiresAt = new Date('9999-01-01T00:00:00.000Z')
+      } else {
+        expiresAt = new Date(now.getTime() + invitation.mailboxExpiryMs)
+      }
+
+      await db.insert(emailsSchema).values({
+        address,
+        createdAt: now,
+        expiresAt,
+        userId: user.id
+      })
+    } catch (error) {
+      console.error('Failed to create mailbox for squire user:', error)
+      throw new Error("创建邮箱失败")
+    }
+  }
 
   return user
 }

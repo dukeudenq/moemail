@@ -14,8 +14,9 @@ declare module "next-auth" {
   interface User {
     roles?: { name: string }[]
     username?: string | null
+    needsInvitationCode?: boolean
   }
-  
+
   interface Session {
     user: User
   }

@@ -12,6 +12,7 @@ interface EmailServiceConfig {
   roleLimits: {
     duke?: number
     knight?: number
+    squire?: number
   }
 }
 
@@ -37,6 +38,7 @@ export async function GET() {
     const finalLimits = {
       duke: customLimits.duke !== undefined ? customLimits.duke : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.duke,
       knight: customLimits.knight !== undefined ? customLimits.knight : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.knight,
+      squire: customLimits.squire !== undefined ? customLimits.squire : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.squire,
     }
 
     return NextResponse.json({
@@ -73,13 +75,16 @@ export async function POST(request: Request) {
     }
 
     const env = getRequestContext().env
-    
-    const customLimits: { duke?: number; knight?: number } = {}
+
+    const customLimits: { duke?: number; knight?: number; squire?: number } = {}
     if (config.roleLimits?.duke !== undefined) {
       customLimits.duke = config.roleLimits.duke
     }
     if (config.roleLimits?.knight !== undefined) {
       customLimits.knight = config.roleLimits.knight
+    }
+    if (config.roleLimits?.squire !== undefined) {
+      customLimits.squire = config.roleLimits.squire
     }
 
     await Promise.all([

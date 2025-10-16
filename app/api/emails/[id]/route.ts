@@ -5,6 +5,8 @@ import { eq, and, lt, or, sql, ne, isNull } from "drizzle-orm"
 import { encodeCursor, decodeCursor } from "@/lib/cursor"
 import { getUserId } from "@/lib/apiKey"
 import { checkBasicSendPermission } from "@/lib/send-permissions"
+import { checkPermission } from "@/lib/auth"
+import { PERMISSIONS } from "@/lib/permissions"
 
 export const runtime = "edge"
 
@@ -12,6 +14,15 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // Check for CREATE_DELETE_EMAIL permission
+  const hasPermission = await checkPermission(PERMISSIONS.CREATE_DELETE_EMAIL)
+  if (!hasPermission) {
+    return NextResponse.json(
+      { error: "您没有删除邮箱的权限" },
+      { status: 403 }
+    )
+  }
+
   const userId = await getUserId()
 
   try {

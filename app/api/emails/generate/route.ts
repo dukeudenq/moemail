@@ -7,12 +7,21 @@ import { EXPIRY_OPTIONS } from "@/types/email"
 import { EMAIL_CONFIG } from "@/config"
 import { getRequestContext } from "@cloudflare/next-on-pages"
 import { getUserId } from "@/lib/apiKey"
-import { getUserRole } from "@/lib/auth"
-import { ROLES } from "@/lib/permissions"
+import { getUserRole, checkPermission } from "@/lib/auth"
+import { ROLES, PERMISSIONS } from "@/lib/permissions"
 
 export const runtime = "edge"
 
 export async function POST(request: Request) {
+  // Check for CREATE_DELETE_EMAIL permission
+  const hasPermission = await checkPermission(PERMISSIONS.CREATE_DELETE_EMAIL)
+  if (!hasPermission) {
+    return NextResponse.json(
+      { error: "您没有创建邮箱的权限" },
+      { status: 403 }
+    )
+  }
+
   const db = createDb()
   const env = getRequestContext().env
 

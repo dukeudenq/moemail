@@ -100,6 +100,7 @@ async function getUserDailyLimit(userId: string): Promise<number> {
       emperor: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.emperor,
       duke: customLimits.duke !== undefined ? customLimits.duke : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.duke,
       knight: customLimits.knight !== undefined ? customLimits.knight : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.knight,
+      squire: customLimits.squire !== undefined ? customLimits.squire : EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.squire,
       civilian: EMAIL_CONFIG.DEFAULT_DAILY_SEND_LIMITS.civilian,
     }
 
@@ -109,6 +110,8 @@ async function getUserDailyLimit(userId: string): Promise<number> {
       return finalLimits.duke
     } else if (userRoleNames.includes("knight")) {
       return finalLimits.knight
+    } else if (userRoleNames.includes("squire")) {
+      return finalLimits.squire
     } else if (userRoleNames.includes("civilian")) {
       return finalLimits.civilian
     }
