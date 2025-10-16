@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createDb } from "@/lib/db"
 import { invitationCodes } from "@/lib/schema"
-import { eq, and, isNull, gt } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 export const runtime = "edge"
 

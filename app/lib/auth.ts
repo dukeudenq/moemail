@@ -20,21 +20,6 @@ const ROLE_DESCRIPTIONS: Record<Role, string> = {
   [ROLES.CIVILIAN]: "平民（普通用户）",
 }
 
-const getDefaultRole = async (): Promise<Role> => {
-  const defaultRole = await getRequestContext().env.SITE_CONFIG.get("DEFAULT_ROLE")
-
-  if (
-    defaultRole === ROLES.DUKE ||
-    defaultRole === ROLES.KNIGHT ||
-    defaultRole === ROLES.SQUIRE ||
-    defaultRole === ROLES.CIVILIAN
-  ) {
-    return defaultRole as Role
-  }
-
-  return ROLES.CIVILIAN
-}
-
 async function findOrCreateRole(db: Db, roleName: Role) {
   let role = await db.query.roles.findFirst({
     where: eq(roles.name, roleName),
@@ -147,7 +132,7 @@ export const {
     }),
   ],
   events: {
-    async signIn({ user }) {
+    async signIn() {
       // OAuth users without a role will be prompted for invitation code in the session callback
       // No automatic role assignment here anymore
       return true
