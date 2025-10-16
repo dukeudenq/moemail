@@ -135,7 +135,6 @@ export const {
     async signIn() {
       // OAuth users without a role will be prompted for invitation code in the session callback
       // No automatic role assignment here anymore
-      return true
     },
   },
   callbacks: {
