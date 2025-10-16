@@ -48,14 +48,10 @@ async function migrate() {
 
     const dbName = config.d1_databases[0].database_name
 
-    // Only generate migrations in local mode
-    // For remote deployments, use pre-committed migrations from the repo
-    if (mode === 'local') {
-      console.log('Generating migrations...')
-      await execAsync('drizzle-kit generate')
-    } else {
-      console.log('Skipping migration generation (using committed migrations)')
-    }
+    // Skip migration generation during deployment
+    // Migrations should be generated locally and committed to the repository
+    // This ensures consistent, reviewed migrations and prevents auto-generation conflicts
+    console.log('Using pre-committed migrations from repository')
 
     // Applying migrations
     console.log(`Applying migrations to ${mode} database: ${dbName}`)
