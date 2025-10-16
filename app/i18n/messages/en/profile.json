@@ -8,6 +8,7 @@
       "EMPEROR": "Emperor",
       "DUKE": "Duke",
       "KNIGHT": "Knight",
+      "SQUIRE": "Squire",
       "CIVILIAN": "Civilian"
     }
   },

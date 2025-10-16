@@ -18,6 +18,7 @@ import {
 const roleIcons = {
   [ROLES.DUKE]: Gem,
   [ROLES.KNIGHT]: Sword,
+  [ROLES.SQUIRE]: Sword,
   [ROLES.CIVILIAN]: User2,
 } as const
 
@@ -30,10 +31,11 @@ export function PromotePanel() {
   const [loading, setLoading] = useState(false)
   const [targetRole, setTargetRole] = useState<RoleWithoutEmperor>(ROLES.KNIGHT)
   const { toast } = useToast()
-  
+
   const roleNames = {
     [ROLES.DUKE]: tCard("roles.DUKE"),
     [ROLES.KNIGHT]: tCard("roles.KNIGHT"),
+    [ROLES.SQUIRE]: tCard("roles.SQUIRE"),
     [ROLES.CIVILIAN]: tCard("roles.CIVILIAN"),
   } as const
 
@@ -140,6 +142,12 @@ export function PromotePanel() {
                 <div className="flex items-center gap-2">
                   <Sword className="w-4 h-4" />
                   {roleNames[ROLES.KNIGHT]}
+                </div>
+              </SelectItem>
+              <SelectItem value={ROLES.SQUIRE}>
+                <div className="flex items-center gap-2">
+                  <Sword className="w-4 h-4 opacity-60" />
+                  {roleNames[ROLES.SQUIRE]}
                 </div>
               </SelectItem>
               <SelectItem value={ROLES.CIVILIAN}>
