@@ -4,16 +4,9 @@ import { users, userRoles, emails } from "@/lib/schema"
 import { getUserId } from "@/lib/apiKey"
 import { checkPermission } from "@/lib/auth"
 import { PERMISSIONS } from "@/lib/permissions"
-import { eq, desc, sql, and, lt } from "drizzle-orm"
+import { eq, desc, sql } from "drizzle-orm"
 
 export const runtime = "edge"
-
-interface ListUsersQuery {
-  role?: string
-  page?: number
-  limit?: number
-  hasExpiredMailbox?: boolean
-}
 
 export async function GET(request: Request) {
   // Check for PROMOTE_USER permission (EMPEROR only)
@@ -44,7 +37,7 @@ export async function GET(request: Request) {
     const offset = (page - 1) * limit
 
     // Build query
-    let query = db
+    const allUsers = await db
       .select({
         id: users.id,
         name: users.name,
@@ -60,8 +53,6 @@ export async function GET(request: Request) {
       .orderBy(desc(users.id))
       .limit(limit)
       .offset(offset)
-
-    const allUsers = await query
 
     // Get role names and mailbox info for each user
     const usersWithDetails = await Promise.all(

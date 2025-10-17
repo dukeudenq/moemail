@@ -97,6 +97,7 @@ export function UserManagementPanel() {
 
   useEffect(() => {
     fetchUsers(1, true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roleFilter])
 
   const handleDelete = async (user: User) => {
