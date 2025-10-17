@@ -98,8 +98,12 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('Failed to generate invitation code:', error)
+    const errorMessage = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { error: "生成邀请码失败" },
+      {
+        error: "生成邀请码失败",
+        details: errorMessage
+      },
       { status: 500 }
     )
   }

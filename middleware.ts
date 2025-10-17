@@ -12,6 +12,7 @@ const API_PERMISSIONS: Record<string, Permission> = {
   '/api/roles/promote': PERMISSIONS.PROMOTE_USER,
   '/api/config': PERMISSIONS.MANAGE_CONFIG,
   '/api/api-keys': PERMISSIONS.MANAGE_API_KEY,
+  '/api/users': PERMISSIONS.PROMOTE_USER,
 }
 
 export async function middleware(request: Request) {
@@ -80,5 +81,6 @@ export const config = {
     '/api/config/:path*',
     '/api/api-keys/:path*',
     '/api/invitation-codes/:path*',
+    '/api/users/:path*',
   ]
 } 

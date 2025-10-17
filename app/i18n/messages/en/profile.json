@@ -119,6 +119,22 @@
     "loading": "Loading...",
     "updateSuccess": "User role updated successfully",
     "updateFailed": "Failed to update user role"
+  },
+  "userManagement": {
+    "title": "User Management",
+    "description": "View and manage all users (Emperor only)",
+    "filterByRole": "Filter by role",
+    "allRoles": "All roles",
+    "noUsers": "No users found",
+    "mailboxStats": "{total} mailboxes ({active} active, {expired} expired)",
+    "delete": "Delete",
+    "deleteConfirm": "Confirm Delete",
+    "deleteDescription": "Are you sure you want to delete user {username}? This action cannot be undone and will delete all their mailboxes and messages.",
+    "deleteSuccess": "User deleted successfully",
+    "deleteFailed": "Failed to delete user",
+    "loadMore": "Load More",
+    "loadFailed": "Failed to load users",
+    "cancel": "Cancel"
   }
 }
 
