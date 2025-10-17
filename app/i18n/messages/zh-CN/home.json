@@ -1,6 +1,6 @@
 {
-  "title": "MoeMail",
-  "subtitle": "萌萌哒临时邮箱服务",
+  "title": "InstantMail",
+  "subtitle": "快快达临时邮箱服务",
   "features": {
     "privacy": {
       "title": "隐私保护",
@@ -17,7 +17,8 @@
   },
   "actions": {
     "enterMailbox": "进入邮箱",
-    "getStarted": "开始使用"
+    "getStarted": "开始使用",
+    "getInvitationCode": "用智简历闪念，得邀请码"
   }
 }
 

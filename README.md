@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="public/icons/icon-192x192.png" alt="MoeMail Logo" width="100" height="100">
-  <h1 align="center">MoeMail</h1>
+  <img src="public/icons/icon-192x192.png" alt="InstantMail Logo" width="100" height="100">
+  <h1 align="center">InstantMail</h1>
 </p>
 
 <p align="center">
-  一个基于 NextJS + Cloudflare 技术栈构建的可爱临时邮箱服务🎉
+  一个基于 NextJS + Cloudflare 技术栈构建的快速临时邮箱服务🎉
 </p>
 
 <p align="center">
@@ -47,7 +47,7 @@
 - 🔄 **自动清理**：自动清理过期的邮箱和邮件
 - 📱 **PWA 支持**：支持 PWA 安装
 - 💸 **免费自部署**：基于 Cloudflare 构建, 可实现免费自部署，无需任何费用
-- 🎉 **可爱的 UI**：简洁可爱萌萌哒 UI 界面
+- 🎉 **简洁的 UI**：简洁清爽的 UI 界面
 - 📤 **发件功能**：支持使用临时邮箱发送邮件，基于 Resend 服务
 - 🔔 **Webhook 通知**：支持通过 webhook 接收新邮件通知
 - 🛡️ **权限系统**：支持基于角色的权限控制系统
@@ -80,7 +80,7 @@
 
 1. 克隆仓库：
 ```bash
-git clone https://github.com/beilunyang/moemail.git
+git clone https://github.com/dukeudenq/moemail.git
 cd moemail
 ```
 
@@ -190,12 +190,12 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 - 确保所有 Secrets 都已正确设置
 - 使用 tag 触发时，tag 必须以 `v` 开头（例如：v1.0.0）
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/beilunyang/moemail)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/dukeudenq/moemail)
 
 
 ## 邮箱域名配置
 
-在 MoeMail 个人中心页面，可以配置网站的邮箱域名，支持多域名配置，多个域名用逗号分隔
+在 InstantMail 个人中心页面，可以配置网站的邮箱域名，支持多域名配置，多个域名用逗号分隔
 ![邮箱域名配置](https://pic.otaku.ren/20241227/AQAD88AxG67zeVd-.jpg "邮箱域名配置")
 
 ### Cloudflare 邮件路由配置
@@ -290,7 +290,7 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 
 ## 发件功能
 
-MoeMail 支持使用临时邮箱发送邮件，基于 [Resend](https://resend.com/) 服务。
+InstantMail 支持使用临时邮箱发送邮件，基于 [Resend](https://resend.com/) 服务。
 
 ### 功能特性
 
@@ -317,7 +317,7 @@ MoeMail 支持使用临时邮箱发送邮件，基于 [Resend](https://resend.co
    - 复制 API Key 供后续配置使用
 
 2. **配置发件服务**
-   - 皇帝角色登录 MoeMail
+   - 皇帝角色登录 InstantMail
    - 进入个人中心页面
    - 在"Resend 发件服务配置"部分：
      - 启用发件服务开关
@@ -641,7 +641,7 @@ const data = await res.json();
       关注公众号，了解更多项目进展以及AI，区块链，独立开发资讯
     </td>
     <td>
-      添加微信，备注 "MoeMail" 拉你进微信交流群
+      添加微信，备注 "InstantMail" 拉你进微信交流群
     </td>
   </tr>
 </table>
@@ -659,10 +659,10 @@ const data = await res.json();
 
 ## Star History
 
-<a href="https://www.star-history.com/#beilunyang/moemail&Date">
+<a href="https://www.star-history.com/#dukeudenq/moemail&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=beilunyang/moemail&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=beilunyang/moemail&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=beilunyang/moemail&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=dukeudenq/moemail&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=dukeudenq/moemail&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=dukeudenq/moemail&type=Date" />
  </picture>
 </a>
