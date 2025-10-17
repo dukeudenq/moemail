@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from "next-intl"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { signOut } from "next-auth/react"
-import { Github, Settings, Crown, Sword, User2, Gem, Mail } from "lucide-react"
+import { Github, Settings, Crown, Sword, User2, Gem, Mail, Shield } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { WebhookConfig } from "./webhook-config"
 import { PromotePanel } from "./promote-panel"
@@ -24,6 +24,7 @@ const roleConfigs = {
   emperor: { key: 'EMPEROR', icon: Crown },
   duke: { key: 'DUKE', icon: Gem },
   knight: { key: 'KNIGHT', icon: Sword },
+  squire: { key: 'SQUIRE', icon: Shield },
   civilian: { key: 'CIVILIAN', icon: User2 },
 } as const
 

@@ -200,7 +200,7 @@ export function WebhookConfig() {
   "content": "${t("docs.content")}",
   "html": "${t("docs.html")}",
   "receivedAt": "2024-01-01T12:00:00.000Z",
-  "toAddress": "your-email@yourdomain.com"
+  "toAddress": "your-email@${window.location.host}"
 }`}
                 </pre>
               </div>
