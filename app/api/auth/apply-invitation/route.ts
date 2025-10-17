@@ -133,8 +133,26 @@ export async function POST(request: Request) {
           throw new Error("用户不存在")
         }
 
-        const username = user.username || user.email?.split('@')[0] || user.name
-        const address = `${username}@${domain}`
+        // Extract and sanitize username
+        let username = user.username || user.email?.split('@')[0] || user.name || session.user.id.substring(0, 8)
+        // Sanitize: lowercase, remove special chars, spaces
+        username = username.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+        if (!username || username.length === 0) {
+          username = session.user.id.substring(0, 8)
+        }
+
+        let address = `${username}@${domain}`
+
+        // Check if address already exists
+        const existingMailbox = await db.query.emails.findFirst({
+          where: eq(emailsSchema.address, address)
+        })
+
+        if (existingMailbox) {
+          // Append user ID suffix to make it unique
+          address = `${username}-${session.user.id.substring(0, 6)}@${domain}`
+        }
 
         let expiresAt: Date
         if (invitation.mailboxExpiryMs === 0 || invitation.mailboxExpiryMs === null) {
